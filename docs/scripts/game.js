@@ -57,6 +57,7 @@ function spawnCows(){
 	cow.y2 = randValue(cow.y1, gameHeight);
 	cow.width = cow.x2 - cow.x1;
 	cow.height = cow.y2 - cow.y1;
+	numActiveCows ++;
 }
 
 canv.width = gameWidth;
