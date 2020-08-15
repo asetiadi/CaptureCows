@@ -1,10 +1,12 @@
 // Blueprint for cow objects
-function Cow(x1, x2, y1, y2, active){
+function Cow(x1, x2, y1, y2, active, width, height){
 	this.x1 = x1;
 	this.x2 = x2;
 	this.y1 = y1;
 	this.y2 = y2;
 	this.active = active;
+	this.width = -1;
+	this.height = -1;
 }
 
 // Game variables
@@ -51,4 +53,6 @@ function spawnCows(){
 	cow.y1 = randValue(0, gameHeight);
 	cow.x2 = randValue(cow.x1, gameWidth);
 	cow.y2 = randValue(cow.y1, gameHeight);
+	cow.width = cow.x2 - cow.x1;
+	cow.height = cow.y2 - cow.y1;
 }
