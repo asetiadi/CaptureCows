@@ -65,3 +65,13 @@ ctx = canv.getContext("2d");
 ctx.fillStyle = "#000000";
 // fills a rectangle
 ctx.fillRect(0, 0, gameWidth, gameHeight);
+
+function drawCows(){
+	// clears the canvas
+	ctx.clearRect(0, 0, canv.width, canv.height);
+	for(i = 0; i < MAX_COWS; i++){
+		if(cows[i].active == true){
+			ctx.fillRect(cows[i].x1, cows[i].y1, cows[i].width, cows[i].height);
+		}
+	}
+}
