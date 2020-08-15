@@ -1,3 +1,50 @@
+var VIDEOINTERVAL = 100,
+	BUTTON_VIDEO = document.getElementById("enableVideo");
+
+var video = document.getElementById("myvideo"),
+	isVideo = false,
+	modelParams = {
+	    flipHorizontal : true, // flip e.g for video  
+	    maxNumBoxes : 1, // maximum number of boxes to detect
+	    iouThreshold : 0.5, // ioU threshold for non-max suppression
+	    scoreThreshold : 0.6 // confidence threshold for predictions.
+	},
+	model = null,
+	videoCanvas = document.getElementById("videoCanvas"),
+	videoCtx = videoCanvas.getContext("2d");
+
+function onVideoStart(status) {
+    console.log("video started", status);
+    if (status) {
+        isVideo = true
+        model.detect(video).then(parsePredictions);
+    } else {
+        
+    }
+}
+
+function onButtonVideoPress() {
+    handTrack.startVideo(video).then(onVideoStart);
+}
+
+BUTTON_VIDEO.addEventListener("click", onButtonVideoPress);
+
+function parsePredictions( predictions ) {
+    model.renderPredictions(predictions, videoCanvas, videoCtx, video);
+    if (predictions[0]) {
+        let midval = predictions[0].bbox[0] + (predictions[0].bbox[2] / 2)
+        gamex = document.body.clientWidth * (midval / video.width)
+        console.log('Predictions: ', predictions[0]);
+    }
+}
+
+function onHandTrackLoad( lmodel ) {
+	console.log("loaded");
+    model = lmodel;
+}
+
+handTrack.load(modelParams).then(onHandTrackLoad);
+
 // Blueprint for cow objects
 function Cow(x1, x2, y1, y2, active, width, height){
 	this.x1 = x1;
@@ -14,6 +61,7 @@ var cows = [];
 var numActiveCows = -1;
 var canv = document.getElementById("gameCanvas");
 var ctx = null;
+var lastVideoUpdate = -1;
 
 // Game constants
 var MAX_COWS = 6;
@@ -99,6 +147,12 @@ function containCows(cow1, cow2){
 
 function game_loop( time ){
     drawCows();
+    if( isVideo ) {
+    	if( lastVideoUpdate == -1 ) lastVideoUpdate = time;
+    	if( time - lastVideoUpdate >= VIDEOINTERVAL ) {
+    		model.detect(video).then(parsePredictions);
+    	}
+    }
     window.requestAnimationFrame( game_loop );
 }
 
