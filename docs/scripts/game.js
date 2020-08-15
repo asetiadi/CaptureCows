@@ -77,6 +77,26 @@ function drawCows(){
 	}
 }
 
+function overlapCows(cow1, cow2){
+	if(cow1.x1 >= cow2.x2 || cow2.x1 >= cow1.x2){
+		return false;
+	}
+
+	if(cow1.y1 <= cow2.y2 || cow2.y1 <= cow1.y2){
+		return false;
+	}
+	return true;
+}
+
+function containCows(cow1, cow2){
+	if((cow1.y1 < cow2.y1 && cow2.y2 < cow1.y2) && (cow1.x1 < cow2.x1 && cow2.x2 < cow1.x2)){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
 function game_loop( time ){
     drawCows();
     window.requestAnimationFrame( game_loop );
