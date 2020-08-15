@@ -12,6 +12,8 @@ function Cow(x1, x2, y1, y2, active, width, height){
 // Game variables
 var cows = [];
 var numActiveCows = -1;
+var canv = document.getElementById("gameCanvas");
+var ctx = null;
 
 // Game constants
 var MAX_COWS = 6;
@@ -56,3 +58,10 @@ function spawnCows(){
 	cow.width = cow.x2 - cow.x1;
 	cow.height = cow.y2 - cow.y1;
 }
+
+canv.width = gameWidth;
+canv.height = gameHeight;
+ctx.getContext("2d");
+ctx.fillStyle = "#000000";
+// fills a rectangle
+ctx.fillRect(0, 0, gameWidth, gameHeight);
