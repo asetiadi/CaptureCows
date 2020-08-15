@@ -50,5 +50,5 @@ function spawnCows(){
 	cow.x1 = randValue(0, gameWidth);
 	cow.y1 = randValue(0, gameHeight);
 	cow.x2 = randValue(cow.x1, gameWidth);
-	cow.y2 = randValue(0, cow.y1);
+	cow.y2 = randValue(cow.y1, gameHeight);
 }
