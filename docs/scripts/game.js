@@ -61,7 +61,7 @@ function spawnCows(){
 
 canv.width = gameWidth;
 canv.height = gameHeight;
-ctx.getContext("2d");
+ctx = canv.getContext("2d");
 ctx.fillStyle = "#000000";
 // fills a rectangle
 ctx.fillRect(0, 0, gameWidth, gameHeight);
