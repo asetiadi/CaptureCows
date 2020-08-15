@@ -1,3 +1,4 @@
+// Blueprint for cow objects
 function Cow(x1, x2, y1, y2, active){
 	this.x1 = x1;
 	this.x2 = x2;
@@ -6,18 +7,23 @@ function Cow(x1, x2, y1, y2, active){
 	this.active = active;
 }
 
+// Game variables
 var cows = [];
 
+// Game constants
 var MAX_COWS = 6;
 
+// Initialize cows
 for (i = 0; i < MAX_COWS; i++){
 	cows.push(new Cow(-1, -1, -1, -1, false));
 }
 
+// Randomly generate numbers
 function randValue(lowerBound, upperBound){
 	return Math.floor(Math.random() * (upperBound - lowerBound) + lowerBound);
 }
 
+// Gets the first non-active cow
 function getActiveCows(){
 
 	var firstActiveIndex = -1;
@@ -30,6 +36,7 @@ function getActiveCows(){
 	}
 }
 
+// Spawns a cow in the game
 function spawnCows(){
 	var active_index = getActiveCows();
 	var cow = cows[active_index];
