@@ -9,9 +9,12 @@ function Cow(x1, x2, y1, y2, active){
 
 // Game variables
 var cows = [];
+var numActiveCows = -1;
 
 // Game constants
 var MAX_COWS = 6;
+var gameWidth = 1280;
+var gameHeight = 720;
 
 // Initialize cows
 for (i = 0; i < MAX_COWS; i++){
@@ -38,6 +41,14 @@ function getActiveCows(){
 
 // Spawns a cow in the game
 function spawnCows(){
+	if (numActiveCows == MAX_COWS){
+		return;
+	}
 	var active_index = getActiveCows();
 	var cow = cows[active_index];
+	cow.active = true;
+	cow.x1 = randValue(0, gameWidth);
+	cow.y1 = randValue(0, gameHeight);
+	cow.x2 = randValue(cow.x1, gameWidth);
+	cow.y2 = randValue(0, cow.y1);
 }
