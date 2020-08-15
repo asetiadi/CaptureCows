@@ -75,3 +75,10 @@ function drawCows(){
 		}
 	}
 }
+
+function game_loop( time ){
+    drawCows();
+    window.requestAnimationFrame( game_loop );
+}
+
+window.requestAnimationFrame( game_loop );
