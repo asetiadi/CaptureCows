@@ -19,9 +19,7 @@ var video = document.getElementById("myvideo"),
 	    iouThreshold : 0.5, // ioU threshold for non-max suppression
 	    scoreThreshold : 0.6 // confidence threshold for predictions.
 	},
-	model = null,
-	videoCanvas = document.getElementById("videoCanvas"),
-	videoCtx = videoCanvas.getContext("2d");
+	model = null;
 
 // Blueprint for cow objects
 function Cow(x1, x2, y1, y2, active, width, height){
