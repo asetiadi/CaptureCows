@@ -26,7 +26,8 @@ var VIDEOINTERVAL = 100,
 	SCREEN_VIDEO = document.getElementById("videoOverlay"),
 	SCREEN_GAME = document.getElementById("gameScreen"),
 	TEXT_SCORE = document.getElementById("score"),
-	TEXT_ESCAPED = document.getElementById("escaped");
+	TEXT_ESCAPED = document.getElementById("escaped"),
+	AUDIO_MOO = new Audio("assets/moo.wav");
 
 IMG_RIGHT.src = "assets/cow_new_right.png";
 IMG_LEFT.src = "assets/cow_new_left.png";
@@ -220,6 +221,7 @@ function game_loop( time ) {
 	if( contained == 1 ) {
 		kill.active = false;
 		numActiveCows--;
+		AUDIO_MOO.play();
 		TEXT_SCORE.innerHTML = (++score).toString();
 	}
 	if(time - lastSpawn >= spawnDelay && numActiveCows < MAX_COWS) {
@@ -259,6 +261,7 @@ function onVideoStart(status) {
 }
 
 function onButtonVideoPress() {
+	AUDIO_MOO.play();
 	if(window.matchMedia("(orientation:landscape)").matches) {
 		SCREEN_START.setAttribute( "class", "hide" );
 		SCREEN_GAME.setAttribute( "class", "show" );
