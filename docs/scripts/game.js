@@ -245,7 +245,21 @@ function game_loop( time ) {
     if(escaped<MAX_ESCAPED) {
 	    window.requestAnimationFrame( game_loop );
 	} else {
-
+		firebase.database().ref("/scores").push().set({
+			score : score
+		}, function(err) {
+			if( err ) return;
+			firebase.database().ref("/scores").orderByChild( "score" ).limitToLast(1).once( "value" ).then( function( snapshot ) {
+				snapshot.forEach( function( snap ) {
+					var s = snap.val().score;
+					if( s == score ) {
+						alert( "You lost! But you set the all-time record!" );
+					} else {
+						alert( "You lost! The highest score ever is " + ss );
+					}
+				} );
+			} );
+		});
 	}
 }
 
