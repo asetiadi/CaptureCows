@@ -2,9 +2,13 @@
 <html>
     <head>
         <title>Capture Cows</title>
+        <link rel="stylesheet" type="text/css" href="style/style.css" />
     </head>
     <body>
-    	<canvas id="gameCanvas"></canvas>
+    <button id="enableVideo">WEBCAM BOI</button>
+    <video class="flip" autoplay="autoplay" id="myvideo"></video>
+    <canvas id="videoCanvas"></canvas>
+    <canvas id="gameCanvas"></canvas>
 		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-auth.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-database.js"></script>
@@ -22,6 +26,7 @@
   	// Initialize Firebase
   	firebase.initializeApp(firebaseConfig);
 	</script>
+  <script src="https://cdn.jsdelivr.net/npm/handtrackjs@latest/dist/handtrack.min.js"> </script>
 	<script src="scripts/game.js"></script>
     </body>
 </html>

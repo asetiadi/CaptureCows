@@ -1,3 +1,28 @@
+var VIDEOINTERVAL = 100,
+	BUTTON_VIDEO = document.getElementById("enableVideo");
+
+function HandBox() {
+	this.x1 = 0;
+	this.y1 = 0;
+	this.x2 = 1;
+	this.y2 = 1;
+	this.width = 1;
+	this.height = 1;
+}
+
+var video = document.getElementById("myvideo"),
+	hand = new HandBox(),
+	isVideo = false,
+	modelParams = {
+	    flipHorizontal : true, // flip e.g for video  
+	    maxNumBoxes : 1, // maximum number of boxes to detect
+	    iouThreshold : 0.5, // ioU threshold for non-max suppression
+	    scoreThreshold : 0.6 // confidence threshold for predictions.
+	},
+	model = null,
+	videoCanvas = document.getElementById("videoCanvas"),
+	videoCtx = videoCanvas.getContext("2d");
+
 // Blueprint for cow objects
 function Cow(x1, x2, y1, y2, active, width, height){
 	this.x1 = x1;
@@ -14,6 +39,7 @@ var cows = [];
 var numActiveCows = -1;
 var canv = document.getElementById("gameCanvas");
 var ctx = null;
+var lastVideoUpdate = -1;
 
 // Game constants
 var MAX_COWS = 6;
@@ -97,9 +123,59 @@ function containCows(cow1, cow2){
 	}
 }
 
-function game_loop( time ){
+function game_loop( time ) {
     drawCows();
+    ctx.fillStyle = "#00FF00";
+    ctx.fillRect(hand.x1, hand.y1, hand.width, hand.height);
+    ctx.fillStyle = "#FFFFFF";
+    if( isVideo ) {
+    	if( lastVideoUpdate == -1 ) lastVideoUpdate = time;
+    	if( time - lastVideoUpdate >= VIDEOINTERVAL ) {
+    		model.detect(video).then(parsePredictions);
+    	}
+    }
     window.requestAnimationFrame( game_loop );
 }
 
 window.requestAnimationFrame( game_loop );
+
+function onVideoStart(status) {
+    console.log("video started", status);
+    if (status) {
+        isVideo = true
+        model.detect(video).then(parsePredictions);
+    } else {
+        
+    }
+}
+
+function onButtonVideoPress() {
+    handTrack.startVideo(video).then(onVideoStart);
+}
+
+BUTTON_VIDEO.addEventListener("click", onButtonVideoPress);
+
+function parsePredictions( predictions ) {
+    var p = predictions[0];
+    var vwidth = video.width;
+    var vheight = video.height;
+    var xScale = gameWidth / vwidth;
+    var yScale = gameHeight / vheight;
+    if (p) {
+    	console.log( p.bbox );
+    	hand.x1 = p.bbox[0] * xScale;
+    	hand.y1 = p.bbox[1] * yScale;
+    	hand.width = p.bbox[2] * xScale;
+    	hand.height = p.bbox[3] * yScale;
+    	hand.x2 = hand.x1 + hand.width;
+    	hand.y2 = hand.y1 + hand.height;
+    	
+    }
+}
+
+function onHandTrackLoad( lmodel ) {
+	console.log("loaded");
+    model = lmodel;
+}
+
+handTrack.load(modelParams).then(onHandTrackLoad);
