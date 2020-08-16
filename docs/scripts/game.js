@@ -53,8 +53,8 @@ function spawnCows(){
 	cow.active = true;
 	cow.x1 = randValue(0, gameWidth);
 	cow.y1 = randValue(0, gameHeight);
-	cow.x2 = randValue(cow.x1, gameWidth);
-	cow.y2 = randValue(cow.y1, gameHeight);
+	cow.x2 = randValue(cow.x1, gameWidth - Math.floor(0.5 * (gameWidth - cow.x1)));
+	cow.y2 = randValue(cow.y1, gameHeight - Math.floor(0.5 * (gameHeight - cow.x1)));
 	cow.width = cow.x2 - cow.x1;
 	cow.height = cow.y2 - cow.y1;
 	numActiveCows ++;
