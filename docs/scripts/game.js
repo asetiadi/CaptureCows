@@ -1,5 +1,35 @@
+// Game constants
+var MAX_COWS = 6;
+var MAX_ESCAPED = 5;
+var MIN_SPAWN = 500;
+var MIN_DESPAWN = 1000;
+var REDUCE_DESPAWN = .001;
+var REDUCE_SPAWN = .001;
+
+// Important
+var despawnTime = 7500;
+var spawnDelay = 5000;
+
+var isMobile = 
+		/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ?
+	 		true : false;
+
 var VIDEOINTERVAL = 100,
-	BUTTON_VIDEO = document.getElementById("enableVideo");
+	BUTTON_VIDEO = document.getElementById("enableVideo"),
+	IMG_LEFT = new Image(),
+	IMG_RIGHT = new Image(),
+	FRAME_COWS = 7,
+	WIDTH_COWS = 71,
+	HEIGHT_COWS = 44,
+	DELAY_ANIM = 100,
+	SCREEN_START = document.getElementById("gridContainer"),
+	SCREEN_VIDEO = document.getElementById("videoOverlay"),
+	SCREEN_GAME = document.getElementById("gameScreen"),
+	TEXT_SCORE = document.getElementById("score"),
+	TEXT_ESCAPED = document.getElementById("escaped");
+
+IMG_RIGHT.src = "assets/cow_new_right.png";
+IMG_LEFT.src = "assets/cow_new_left.png";
 
 function HandBox() {
 	this.x1 = 0;
@@ -30,19 +60,34 @@ function Cow(x1, x2, y1, y2, active, width, height){
 	this.active = active;
 	this.width = -1;
 	this.height = -1;
+	this.spawned = Date.now();
+	this.left = false;
+	this.lastAnim = -1;
+	this.frame = 0;
 }
 
 // Game variables
 var cows = [];
-var numActiveCows = -1;
+var numActiveCows = 0;
 var canv = document.getElementById("gameCanvas");
 var ctx = null;
 var lastVideoUpdate = -1;
 
-// Game constants
-var MAX_COWS = 6;
-var gameWidth = 1280;
-var gameHeight = 720;
+var WIDTH = 1024;
+var HEIGHT = 768;
+var gameWidth = 1024;
+var gameHeight = 768;
+var modelLoaded = false;
+var score = 0;
+var escaped = 0;
+if( ( WIDTH / window.screen.width ) <= ( HEIGHT / window.screen.height ) ) {
+	gameWidth = WIDTH;
+	gameHeight = ( window.screen.height * ( WIDTH / window.screen.width ) ) | 0;
+} else {
+	gameHeight = HEIGHT;
+	gameWidth = ( window.screen.width * ( WIDTH / window.screen.height ) ) | 0;
+}
+
 
 // Initialize cows
 for (i = 0; i < MAX_COWS; i++){
@@ -67,36 +112,65 @@ function getActiveCows(){
 	}
 }
 
+function toggleOverlay() {
+	if(SCREEN_VIDEO.getAttribute("class") == "hide") {
+		SCREEN_VIDEO.setAttribute("class", "show");
+	} else {
+		SCREEN_VIDEO.setAttribute("class", "hide");
+	}
+}
+
 // Spawns a cow in the game
-function spawnCows(){
+function spawnCows(time){
 	if (numActiveCows == MAX_COWS){
 		return;
 	}
 	var active_index = getActiveCows();
 	var cow = cows[active_index];
+	if(cows[active_index] == undefined || cows[active_index] == null) console.log(active_index);
+	var cont = true;
 	cow.active = true;
-	cow.x1 = randValue(0, gameWidth);
-	cow.y1 = randValue(0, gameHeight);
-	cow.x2 = randValue(cow.x1, gameWidth - Math.floor(0.5 * (gameWidth - cow.x1)));
-	cow.y2 = randValue(cow.y1, gameHeight - Math.floor(0.5 * (gameHeight - cow.x1)));
-	cow.width = cow.x2 - cow.x1;
-	cow.height = cow.y2 - cow.y1;
-	numActiveCows ++;
+	while( cont ) {
+		cont = false;
+		cow.x1 = randValue(WIDTH_COWS, gameWidth - WIDTH_COWS * 2);
+		cow.y1 = randValue(HEIGHT_COWS, gameHeight - HEIGHT_COWS * 2);
+		cow.x2 = randValue(cow.x1 + WIDTH_COWS, ( gameWidth - WIDTH_COWS ) - Math.floor(0.5 * ((gameWidth- WIDTH_COWS) - (cow.x1 + WIDTH_COWS))));
+		cow.y2 = randValue(cow.y1 + HEIGHT_COWS, (gameHeight- HEIGHT_COWS) - Math.floor(0.5 * ((gameHeight- HEIGHT_COWS)- (cow.y1 + HEIGHT_COWS))));
+		if( cow.y2 > gameHeight || cow.x2 > gameWidth ) cont = true;
+		cow.width = cow.x2 - cow.x1;
+		cow.height = cow.y2 - cow.y1;
+		for(i = 0; i < MAX_COWS; i++){
+			if(cows[i].active == true && cow != cows[i]){
+				if(overlapCows(cows[i],cow)) {
+					cont = true;
+				}
+			}
+		}
+		console.log("huh");
+	}
+	cow.lastAnim = -1;
+	cow.frame = 0;
+	cow.left = ( ( Math.random() * 2 ) | 0 ) == 0;
+	cow.spawned = time;
+	numActiveCows++;
 }
 
 canv.width = gameWidth;
 canv.height = gameHeight;
 ctx = canv.getContext("2d");
-ctx.fillStyle = "#000000";
-// fills a rectangle
-ctx.fillRect(0, 0, gameWidth, gameHeight);
+ctx.imageSmoothingEnabled = false;
 
-function drawCows(){
+function drawCows(time){
 	// clears the canvas
 	ctx.clearRect(0, 0, canv.width, canv.height);
 	for(i = 0; i < MAX_COWS; i++){
 		if(cows[i].active == true){
-			ctx.fillRect(cows[i].x1, cows[i].y1, cows[i].width, cows[i].height);
+			if(cows[i].lastAnim == -1) cows[i].lastAnim = time;
+			if(time - cows[i].lastAnim > DELAY_ANIM) {
+				cows[i].frame = (cows[i].frame + 1) % FRAME_COWS;
+				cows[i].lastAnim = time;
+			}
+			ctx.drawImage(cows[i].left ? IMG_LEFT : IMG_RIGHT, cows[i].frame * WIDTH_COWS, 0, WIDTH_COWS, HEIGHT_COWS, cows[i].x1, cows[i].y1, cows[i].width, cows[i].height);
 		}
 	}
 }
@@ -121,37 +195,81 @@ function containCows(cow1, cow2){
 	}
 }
 
+var lastSpawn = -1;
 function game_loop( time ) {
-    drawCows();
-    ctx.fillStyle = "#00FF00";
-    ctx.fillRect(hand.x1, hand.y1, hand.width, hand.height);
-    ctx.fillStyle = "#FFFFFF";
+	if(lastSpawn == -1) {
+		spawnCows(time);
+		lastSpawn = time;
+	}
+	var contained = 0,
+		kill = null;
+	for(i = 0; i < MAX_COWS; i++){
+		if(cows[i].active == true){
+			if(time - cows[i].spawned >= despawnTime) {
+				numActiveCows--;
+				cows[i].active = false;
+				TEXT_ESCAPED.innerHTML = (++escaped);
+				continue;
+			}
+			if(containCows(hand, cows[i])) {
+				++contained;
+				kill = cows[i];
+			}
+		}
+	}
+	if( contained == 1 ) {
+		kill.active = false;
+		numActiveCows--;
+		TEXT_SCORE.innerHTML = (++score).toString();
+	}
+	if(time - lastSpawn >= spawnDelay && numActiveCows < MAX_COWS) {
+		spawnCows(time);
+		lastSpawn = time;
+	}
+    drawCows(time);
+    ctx.strokeStyle = "#00FF00";
+    ctx.lineWidth = 5;
+    ctx.strokeRect(hand.x1 - 3, hand.y1 - 3, hand.width + 3, hand.height + 3);
     if( isVideo ) {
     	if( lastVideoUpdate == -1 ) lastVideoUpdate = time;
     	if( time - lastVideoUpdate >= VIDEOINTERVAL ) {
     		model.detect(video).then(parsePredictions);
     	}
     }
-    window.requestAnimationFrame( game_loop );
-}
+    spawnDelay -= REDUCE_SPAWN;
+    despawnTime -= REDUCE_DESPAWN;
+    if(spawnDelay < MIN_SPAWN) spawnDelay = MIN_SPAWN;
+    if(despawnTime < MIN_DESPAWN) spawnDelay = MIN_DESPAWN;
+    if(escaped<MAX_ESCAPED) {
+	    window.requestAnimationFrame( game_loop );
+	} else {
 
-window.requestAnimationFrame( game_loop );
+	}
+}
 
 function onVideoStart(status) {
     console.log("video started", status);
     if (status) {
         isVideo = true
         model.detect(video).then(parsePredictions);
+        window.requestAnimationFrame( game_loop );
     } else {
         
     }
 }
 
 function onButtonVideoPress() {
-    handTrack.startVideo(video).then(onVideoStart);
+	if(window.matchMedia("(orientation:landscape)").matches) {
+		SCREEN_START.setAttribute( "class", "hide" );
+		SCREEN_GAME.setAttribute( "class", "show" );
+		toggleOverlay();
+		SCREEN_GAME.addEventListener(isMobile ? "touchend" : "click", toggleOverlay);
+		SCREEN_VIDEO.addEventListener(isMobile ? "touchend" : "click", toggleOverlay)
+    	handTrack.startVideo(video).then(onVideoStart);
+	} else {
+		alert("Please play in landscape mode");
+	}
 }
-
-BUTTON_VIDEO.addEventListener("click", onButtonVideoPress);
 
 function parsePredictions( predictions ) {
     var p = predictions[0];
@@ -174,6 +292,9 @@ function parsePredictions( predictions ) {
 function onHandTrackLoad( lmodel ) {
 	console.log("loaded");
     model = lmodel;
+    modelLoaded = true;
+    BUTTON_VIDEO.innerHTML = "Start Game";
+    BUTTON_VIDEO.addEventListener("click", onButtonVideoPress);
 }
 
 handTrack.load(modelParams).then(onHandTrackLoad);

@@ -5,27 +5,40 @@
         <link rel="stylesheet" type="text/css" href="style/style.css" />
     </head>
     <body>
-    <button id="enableVideo">WEBCAM BOI</button>
-    <video class="flip" autoplay="autoplay" id="myvideo"></video>
-    <canvas id="gameCanvas"></canvas>
-		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-app.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-auth.js"></script>
-		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-database.js"></script>
-		<script>
-  		// Your web app's Firebase configuration
-  		var firebaseConfig = {
-   		 	apiKey: "AIzaSyBN5sgqwhOPVVF1zDljFUaZUOQKqeV8tK0",
-    		authDomain: "capturecows.firebaseapp.com",
-    		databaseURL: "https://capturecows.firebaseio.com",
-    		projectId: "capturecows",
-    		storageBucket: "capturecows.appspot.com",
-    		messagingSenderId: "297896138299",
-    		appId: "1:297896138299:web:dae3ae89f4abdebc6aee1e"
-  		};
-  	// Initialize Firebase
-  	firebase.initializeApp(firebaseConfig);
-	</script>
-  <script src="https://cdn.jsdelivr.net/npm/handtrackjs@latest/dist/handtrack.min.js"> </script>
-	<script src="scripts/game.js"></script>
-    </body>
+      <div id="gridContainer" class="show">
+        <div id="title">
+          Capture Cows
+        </div>
+        <div id="full">
+          <button id="enableVideo" class="startGame">Loading...</button>
+        </div>
+      </div>
+      <div id="videoOverlay" class="hide">
+        <video class="flip" autoplay="autoplay" id="myvideo"></video>
+      </div>
+      <div id="gameScreen" class="hide">
+        <span id="scont">Score:&nbsp;<span id="score">0</span></span>
+        <span id="econt">Escaped:&nbsp;<span id="escaped">0</span></span>
+        <canvas id="gameCanvas"></canvas>
+      </div>
+  		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-app.js"></script>
+  		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-auth.js"></script>
+  		<script src="https://www.gstatic.com/firebasejs/7.18.0/firebase-database.js"></script>
+  		<script>
+    		// Your web app's Firebase configuration
+    		var firebaseConfig = {
+     		 	apiKey: "AIzaSyBN5sgqwhOPVVF1zDljFUaZUOQKqeV8tK0",
+      		authDomain: "capturecows.firebaseapp.com",
+      		databaseURL: "https://capturecows.firebaseio.com",
+      		projectId: "capturecows",
+      		storageBucket: "capturecows.appspot.com",
+      		messagingSenderId: "297896138299",
+      		appId: "1:297896138299:web:dae3ae89f4abdebc6aee1e"
+    		};
+    	// Initialize Firebase
+    	firebase.initializeApp(firebaseConfig);
+  	</script>
+    <script src="https://cdn.jsdelivr.net/npm/handtrackjs@latest/dist/handtrack.min.js"> </script>
+  	<script src="scripts/game.js"></script>
+  </body>
 </html>

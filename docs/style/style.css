@@ -1,13 +1,150 @@
+#scont {
+	position: absolute;
+	top: 1vh;
+	left: 1vw;
+	font-size: 5vh;
+}
+
+#econt {
+	position: absolute;
+	font-size: 5vh;
+	top: 7vh;
+	left: 1vw;
+}
+
+body, html {
+	width: 100vw;
+	height: 100vh;
+	margin: 0px;
+	padding: 0px;
+}
+
+@font-face
+{
+	font-family: "cowboy";
+	src: url("../assets/Rye.ttf");
+}
+
+#something
+{
+	width: 100wide;
+	height: 100long;
+	position: fixed;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: optimizeSpeed;
+	image-rendering: -o-crisp-edges;
+	image-rendering: -moz-crisp-edges;
+}
+
+#gridContainer
+{
+	background-image: url("../assets/titleBack.png");
+	background-size: cover;
+	background-position: center;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+#videoOverlay {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+#full {
+	display: block;
+	width: 40%;
+	height: 30vh;
+	margin-top: 5vh;
+	padding-left: 30%;
+	padding-right: 30%;
+}
+
+#title
+{
+	padding-top: 10vh;
+	display: block;
+	width: 100%;
+	color: brown;
+	font-family: "cowboy";
+	font-size: 20vh;
+	font-weight: bold;
+	text-align: center;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: #654321;
+}
+
+.startGame
+{
+	background-color: #654321;
+	width: 100%;
+	height: 30vh;
+	font-size: 10vh;
+	border-radius: 50px;
+	text-align: center;
+	cursor: pointer;
+}
+
+button {
+	color: white;
+	font-family: "cowboy";
+	display: block;
+}
+
+#startGame:hover
+{
+	border-style: solid;
+	border-color: #52361b;
+	border-width: 5px;
+	background-color: #744d26;
+}
+
+/*#instructions
+{
+	grid-column-start:2;
+	grid-row-start:2;
+	width: 100%;
+	height: 100%;
+	font-family: Arial;
+}*/
+
 .flip {
 	position: absolute;
     -moz-transform: scale(-1, 1);
     -o-transform: scale(-1, 1);
     -webkit-transform: scale(-1, 1);
     transform: scale(-1, 1);
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.5;
+}
+
+#gameScreen {
+	width: 100%;
+	height: 100%;
 }
 
 #gameCanvas {
 	background-image: url('../assets/background.png');
 	background-position: center;
 	background-size: cover;
+	-ms-interpolation-mode: nearest-neighbor;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: optimizeSpeed;
+	image-rendering: -o-crisp-edges;
+	image-rendering: -moz-crisp-edges;	
+	image-rendering: pixelated;
+	width: 100%;
+	height: 100%;
+}
+
+.hide {
+	display: none!important;
+}
+
+.show {
+	display: block!important;
 }
